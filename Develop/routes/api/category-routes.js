@@ -5,7 +5,7 @@ const { Category, Product } = require('../../models');
 
 router.get('/', async (req, res) => {
   try {
-    const catagoryData = await Category.findAll();
+    const catagoryData = await Category.findAll({include: [Product]});
     res.status(200).json(catagoryData);
   } catch (err) {
     res.status(500).json(err);
@@ -16,7 +16,7 @@ router.get('/:id', async (req, res) => {
   try {
     const catagoryData = await Category.findByPk(req.params.id, {
       // JOIN with Catagory, using the products through table
-      include: [{ model: Category, through: Product, as: 'catagory_product' }]
+      include: [Product]
     });
 
     if (!catagoryData) {
@@ -40,8 +40,14 @@ router.post('/', async (req, res) => {
   // create a new category
 });
 
-router.put('/:id', (req, res) => {
-  // update a category by its `id` value
+router.put('/:id', async (req, res) => {
+  // update a tag's name by its `id` value
+  try {
+    const catagoryData = await Category.update(req.body, {where: {id: req.params.id}})
+    res.status(200).json(catagoryData)
+  } catch (err) {
+    res.status(404).json(err)
+  }
 });
 
 router.delete('/:id', async (req, res) => {

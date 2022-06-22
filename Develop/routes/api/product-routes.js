@@ -23,7 +23,7 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
     try {
       const productData = await Product.findByPk(req.params.id, {
         
-        include: [{ model: Product, through: Category, as: 'Product_Cattag' }]
+        include: [Category,{ model: Tag, through: ProductTag}]
       });
   
       if (!productData) {
